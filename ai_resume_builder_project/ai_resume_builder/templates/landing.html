@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="hero-section position-relative overflow-hidden">
+    <div class="hero-pattern"></div>
+    <div class="container position-relative hero-inner text-center">
+        <h1 class="display-3 fw-bold mb-4 hero-title" data-text="Build One ATS-Perfect Resume with AI">
+            <span class="hero-text">Build ATS-Perfect Resume with AI Resume Builder</span>
+            <div class="hero-glow"></div>
+        </h1>
+        <p class="lead mb-5 hero-subtitle fw-semibold">
+            <span>Create</span> • <span>Optimize</span> • <span>Download</span>
+        </p>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'create_resume' %}" class="btn btn-primary btn-lg px-5 py-3 hero-cta">
+            <span>Create Resume</span>
+            <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}?next={% url 'create_resume' %}" class="btn btn-primary btn-lg px-5 py-3 hero-cta">
+            <span>Create Resume</span>
+            <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="premium-steps">
+    <h2>
+        Build Your Winning Resume in
+        <span>3 Easy Steps</span>
+    </h2>
+
+    <div class="steps-container">
+        <div class="step-card">
+            <img src="{% static 'images/resume builder UI.jpg' %}" alt="Resume builder form">
+            <p>Enter your details in our guided builder.</p>
+        </div>
+
+        <div class="step-card">
+            <img src="{% static 'images/resume template illustration.jpg' %}" alt="ATS resume layout">
+            <p>Your information is automatically arranged into resume layout.</p>
+        </div>
+
+        <div class="step-card">
+            <img src="{% static 'images/free-resume-download.jpg' %}" alt="Download resume">
+            <p>Preview, download, score with ATS, and share your portfolio.</p>
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <a href="{% url 'create_resume' %}" class="build-btn">Build my resume</a>
+    {% else %}
+    <a href="{% url 'login' %}?next={% url 'create_resume' %}" class="build-btn">Build my resume</a>
+    {% endif %}
+</section>
+
+<section class="single-template-section">
+    <div class="container">
+        <div class="single-template-card shadow-lg">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-6">
+                    <img src="{% static 'images/minimalist.jpg' %}" alt="ATS perfect resume preview" class="img-fluid rounded-4">
+                </div>
+                <div class="col-lg-6">
+                    <div class="single-template-eyebrow">Standard Resume Format</div>
+                    <h2 class="section-title mb-3">Clean ATS-perfect design, automatically generated</h2>
+                    <p class="single-template-copy">
+                        The builder creates a professional resume layout focused on ATS readability,
+                        clear section headings, and A4-ready output. No more formatting headaches or compatibility issues.
+                    </p>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'create_resume' %}" class="btn btn-dark btn-lg rounded-pill px-4">Start Building</a>
+                    {% else %}
+                    <a href="{% url 'login' %}?next={% url 'create_resume' %}" class="btn btn-dark btn-lg rounded-pill px-4">Start Building</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-section {
+    min-height: 92vh;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #ffffff 100%);
+}
+
+.hero-inner {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+}
+
+.hero-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(13,110,253,0.06) 0%, transparent 42%),
+        radial-gradient(circle at 80% 25%, rgba(15,118,110,0.08) 0%, transparent 35%),
+        radial-gradient(circle at 50% 75%, rgba(245,158,11,0.06) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+.hero-title {
+    position: relative;
+    color: #1e293b;
+    font-size: clamp(3rem, 8vw, 5rem);
+    line-height: 1.08;
+}
+
+.hero-text {
+    display: block;
+    background: linear-gradient(135deg, #0d6efd 0%, #0f766e 55%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 360px;
+    height: 360px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(13,110,253,0.12) 0%, transparent 70%);
+    z-index: -1;
+}
+
+.hero-subtitle {
+    font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+    color: #475569;
+}
+
+.hero-cta {
+    border: none;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #0d6efd 0%, #0f766e 100%);
+    box-shadow: 0 20px 40px rgba(13, 110, 253, 0.22);
+}
+
+.premium-steps {
+    text-align: center;
+    padding: 80px 20px;
+    background: #f8fafc;
+}
+
+.premium-steps h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.premium-steps h2 span {
+    color: #ef4444;
+}
+
+.steps-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.step-card {
+    width: 300px;
+    text-align: center;
+}
+
+.step-card img {
+    width: 100%;
+    max-width: 250px;
+    margin-bottom: 20px;
+}
+
+.step-card p {
+    color: #334155;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.build-btn {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 14px 40px;
+    background: #0f766e;
+    color: white;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.build-btn:hover {
+    background: #115e59;
+    transform: scale(1.05);
+}
+
+.single-template-section {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    padding: 80px 0;
+}
+
+.single-template-card {
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 2rem;
+}
+
+.single-template-eyebrow {
+    display: inline-block;
+    margin-bottom: 1rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #1d4ed8;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.section-title {
+    color: #0f172a;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+}
+
+.single-template-copy {
+    color: #475569;
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .hero-section,
+    .hero-inner {
+        min-height: auto;
+    }
+
+    .premium-steps,
+    .single-template-section {
+        padding: 56px 20px;
+    }
+
+    .single-template-card {
+        padding: 1.5rem;
+    }
+}
+</style>
+
+{% endblock %}

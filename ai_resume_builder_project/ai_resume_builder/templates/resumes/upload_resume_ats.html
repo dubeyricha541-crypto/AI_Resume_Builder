@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h2 class="fw-bold mb-2">Check ATS score for an existing resume</h2>
+      <p class="text-muted mb-4">
+        Upload a <strong>.pdf</strong>, <strong>.docx</strong>, or <strong>.txt</strong> file. Nothing is saved to your account — you get an instant score.
+        Text-based PDFs work best; scanned images may not extract well.
+      </p>
+
+      <div class="card shadow border-0 rounded-4 p-4 p-md-5">
+        <form method="post" enctype="multipart/form-data" class="mb-0">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Resume file</label>
+            <input type="file" name="resume_file" class="form-control" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-semibold">Job description (optional)</label>
+            <textarea class="form-control" name="job_description" rows="5" placeholder="Paste a job posting to score keyword match…">{{ job_description }}</textarea>
+          </div>
+          <button type="submit" class="btn btn-primary rounded-pill px-4">Analyze ATS score</button>
+        </form>
+
+        {% if error_message %}
+          <div class="alert alert-warning mt-4 mb-0" role="alert">{{ error_message }}</div>
+        {% endif %}
+
+        {% if result_score is not None %}
+          <div class="mt-4 p-4 rounded-4 border bg-light">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <span class="fw-semibold">ATS score</span>
+              <span class="badge rounded-pill fs-5 px-3 py-2 {% if result_score >= 80 %}bg-success{% elif result_score >= 60 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                {{ result_score }}%
+              </span>
+            </div>
+            <p class="text-muted small mt-3 mb-0">
+              This score uses the same engine as the resume builder (AI when configured, plus rule-based checks).
+            </p>
+          </div>
+        {% endif %}
+
+        {% if snippet and result_score is not None %}
+          <details class="mt-4">
+            <summary class="text-muted small" style="cursor:pointer;">Preview extracted text</summary>
+            <pre class="small bg-body-secondary p-3 rounded mt-2 mb-0 text-wrap" style="white-space:pre-wrap;max-height:240px;overflow:auto;">{{ snippet }}</pre>
+          </details>
+        {% endif %}
+      </div>
+
+      <p class="text-center mt-4 mb-0">
+        <a href="{% url 'dashboard' %}">Back to dashboard</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

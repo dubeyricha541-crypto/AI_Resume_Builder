@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/resume-styles.css' %}">
+{% include "resumes/_resume_document.html" with show_actions=True pdf_mode=False %}
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-5">
+
+        <h2 class="text-center mb-3">{{ resume.full_name }}</h2>
+        {% if resume.job_title %}<p class="text-center fw-semibold text-primary mb-1">{{ resume.job_title }}</p>{% endif %}
+        <p class="text-center text-muted">
+            {{ resume.email }} | {{ resume.phone }}
+        </p>
+
+        <hr>
+
+        <h5 class="mt-4">Career Objective</h5>
+        <p>{{ resume.career_objective }}</p>
+
+        <h5 class="mt-4">Skills</h5>
+        <p>{{ resume.skills }}</p>
+
+        <h5 class="mt-4">Experience</h5>
+        <p>{{ resume.experience }}</p>
+
+        <h5 class="mt-4">Education</h5>
+        <p>{{ resume.education }}</p>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'download_resume_pdf' resume.pk %}" class="btn btn-success me-2">Download PDF</a>
+            <a href="{% url 'ats_analyzer' resume.pk %}" class="btn btn-warning me-2">Check ATS</a>
+            <a href="{% url 'portfolio' resume.pk %}" class="btn btn-dark me-2">Portfolio</a>
+            <a href="{% url 'ai_suggestions' resume.pk %}" class="btn btn-primary">AI Suggestions</a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

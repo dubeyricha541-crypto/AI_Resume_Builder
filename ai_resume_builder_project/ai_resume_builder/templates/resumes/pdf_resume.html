@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{ resume.full_name }} - Resume</title>
+    <style>
+      body { font-family: Helvetica, Arial, sans-serif; font-size: 12px; color: #111; }
+      .header { border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 14px; }
+      .name { font-size: 22px; font-weight: 700; margin: 0; }
+      .contact { color: #444; margin-top: 4px; }
+      h2 { font-size: 13px; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 1px; }
+      .item { margin-bottom: 8px; }
+      .muted { color: #666; }
+      .skills span { display: inline-block; padding: 2px 6px; border: 1px solid #ddd; margin: 2px 4px 0 0; }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <p class="name">{{ resume.full_name }}</p>
+      <div class="contact">
+        {{ resume.email }}{% if resume.phone %} · {{ resume.phone }}{% endif %}{% if resume.address %} · {{ resume.address }}{% endif %}
+      </div>
+    </div>
+
+    {% if resume.career_objective %}
+      <h2>Summary</h2>
+      <div class="item">{{ resume.career_objective }}</div>
+    {% endif %}
+
+    {% if resume.skills %}
+      <h2>Skills</h2>
+      <div class="skills">
+        {% for s in resume.skills_list %}<span>{{ s }}</span>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% if resume.exp_entries %}
+      <h2>Experience</h2>
+      {% for e in resume.exp_entries %}
+        <div class="item">
+          <div><strong>{{ e.title }}</strong>{% if e.company %} — {{ e.company }}{% endif %}</div>
+          <div class="muted">{% if e.start or e.end %}{{ e.start }}{% if e.end %} – {{ e.end }}{% endif %}{% endif %}</div>
+          {% if e.desc %}<div>{{ e.desc }}</div>{% endif %}
+        </div>
+      {% endfor %}
+    {% elif resume.experience %}
+      <h2>Experience</h2>
+      <div class="item">{{ resume.experience }}</div>
+    {% endif %}
+
+    {% if resume.edu_entries %}
+      <h2>Education</h2>
+      {% for e in resume.edu_entries %}
+        <div class="item">
+          <div><strong>{{ e.degree }}</strong>{% if e.institution %} — {{ e.institution }}{% endif %}</div>
+          <div class="muted">{% if e.start or e.end %}{{ e.start }}{% if e.end %} – {{ e.end }}{% endif %}{% endif %}</div>
+        </div>
+      {% endfor %}
+    {% elif resume.education %}
+      <h2>Education</h2>
+      <div class="item">{{ resume.education }}</div>
+    {% endif %}
+
+    {% if resume.projects %}
+      <h2>Projects</h2>
+      <div class="item">{{ resume.projects }}</div>
+    {% endif %}
+    {% if resume.certifications %}
+      <h2>Certifications</h2>
+      <div class="item">{{ resume.certifications }}</div>
+    {% endif %}
+    {% if resume.achievements %}
+      <h2>Achievements</h2>
+      <div class="item">{{ resume.achievements }}</div>
+    {% endif %}
+    {% if resume.languages %}
+      <h2>Languages</h2>
+      <div class="item">{{ resume.languages }}</div>
+    {% endif %}
+  </body>
+</html>

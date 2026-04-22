@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Resume Builder</title>
+    {% load static %}
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <style>
+        body {
+            background: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+        .card {
+            border-radius: 15px;
+        }
+        .navbar {
+            background: rgba(0,0,0,0.8);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+        .dark-mode {
+            background: #121212 !important;
+            color: #e8eaed !important;
+        }
+
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            color: #e8eaed;
+        }
+
+        .dark-mode .navbar {
+            background-color: #0d0d0d !important;
+        }
+
+        .dark-mode .text-muted {
+            color: #9aa0a6 !important;
+        }
+
+        .dark-mode footer.bg-dark {
+            background-color: #0d0d0d !important;
+        }
+
+        .dark-mode .nav-link {
+            color: rgba(255,255,255,.85) !important;
+        }
+
+        .theme-toggle-btn {
+            min-width: 2.5rem;
+        }
+
+        .dark-mode .hero-section {
+            background: #0f172a !important;
+        }
+        .dark-mode .hero-title .hero-text {
+            -webkit-text-fill-color: transparent;
+        }
+        .dark-mode .hero-subtitle {
+            color: #94a3b8 !important;
+        }
+        .dark-mode .premium-steps {
+            background: #0f172a !important;
+        }
+        .dark-mode .premium-steps h2 {
+            color: #f1f5f9 !important;
+        }
+        .dark-mode .step-card p {
+            color: #cbd5e1 !important;
+        }
+        .dark-mode .template-section {
+            background: #0f172a !important;
+        }
+        .dark-mode .template-section .section-title {
+            -webkit-text-fill-color: transparent;
+            background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        .dark-mode .landing-template-card {
+            background: #1e293b !important;
+            box-shadow: 0 8px 32px rgba(0,0,0,.4) !important;
+        }
+        .dark-mode .landing-template-card .card-name {
+            background: #1e293b !important;
+            color: #e2e8f0 !important;
+        }
+    </style>
+</head>
+<body id="body" class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'landing' %}">AI Resume Builder</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav align-items-lg-center gap-lg-1">
+
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">My Resumes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'upload_resume_ats' %}">Check uploaded resume</a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-link btn btn-link text-warning m-0 p-2 border-0">Logout</button>
+                        </form>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" onclick="toggleMode()" class="btn btn-sm btn-outline-light ms-lg-2 theme-toggle-btn" id="themeToggleBtn" title="Toggle light/dark">
+                            <span id="themeToggleIcon">🌙</span>
+                        </button>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link text-info" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-success" href="{% url 'register' %}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" onclick="toggleMode()" class="btn btn-sm btn-outline-light ms-lg-2 theme-toggle-btn" id="themeToggleBtnGuest" title="Toggle light/dark">
+                            <span id="themeToggleIconGuest">🌙</span>
+                        </button>
+                    </li>
+                {% endif %}
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="flex-grow-1">
+    {% block content %}
+    {% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'arb-theme';
+
+    function applyTheme(dark) {
+        const body = document.getElementById('body');
+        if (!body) return;
+        if (dark) body.classList.add('dark-mode');
+        else body.classList.remove('dark-mode');
+        document.querySelectorAll('#themeToggleIcon, #themeToggleIconGuest').forEach(function (el) {
+            if (el) el.textContent = dark ? '☀️' : '🌙';
+        });
+    }
+
+    window.toggleMode = function () {
+        const body = document.getElementById('body');
+        if (!body) return;
+        const next = !body.classList.contains('dark-mode');
+        applyTheme(next);
+        try { localStorage.setItem(STORAGE_KEY, next ? 'dark' : 'light'); } catch (e) {}
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        let dark = false;
+        try {
+            dark = localStorage.getItem(STORAGE_KEY) === 'dark';
+        } catch (e) {}
+        applyTheme(dark);
+    });
+})();
+</script>
+<!-- Footer -->
+<footer class="bg-dark text-white pt-5 pb-4 mt-auto">
+
+    <div class="container text-md-left">
+
+        <div class="row text-md-left">
+
+            <!-- About -->
+            <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
+                <h5 class="text-uppercase fw-bold mb-4 text-info">
+                    AI Resume Builder
+                </h5>
+                <p>
+                    Build professional resumes using AI, analyze ATS score,
+                    and generate your own portfolio website in minutes.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
+                <h5 class="text-uppercase fw-bold mb-4">
+                    Quick Links
+                </h5>
+                <p><a href="{% url 'landing' %}" class="text-white text-decoration-none">Home</a></p>
+                <p><a href="{% url 'login' %}" class="text-white text-decoration-none">Login</a></p>
+                <p><a href="{% url 'register' %}" class="text-white text-decoration-none">Register</a></p>
+            </div>
+
+            <!-- Features -->
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
+                <h5 class="text-uppercase fw-bold mb-4">
+                    Features
+                </h5>
+                <p>Resume Builder</p>
+                <p>ATS Analyzer</p>
+                <p>Portfolio Generator</p>
+            </div>
+
+            <!-- Contact -->
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+                <h5 class="text-uppercase fw-bold mb-4">
+                    Contact
+                </h5>
+                <p>Email: dubeyricha541@gmail.com</p>
+                <p>India</p>
+            </div>
+
+        </div>
+
+        <hr class="mb-4">
+
+        <!-- Copyright -->
+        <div class="text-center">
+            © 2026 AI Resume Builder | All Rights Reserved
+        </div>
+
+    </div>
+
+</footer>
+
+</body>
+</html>

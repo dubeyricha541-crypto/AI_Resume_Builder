@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+<div class="card shadow p-4 mx-auto" style="max-width:720px;">
+    <h2 class="text-center mb-2">ATS Analyzer</h2>
+    <p class="text-muted text-center small mb-4">For resume: <strong>{{ resume.full_name }}</strong></p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Target job description (optional)</label>
+            <textarea class="form-control" name="job_description" rows="6" placeholder="Paste the job description to score keyword alignment…">{{ resume.job_description }}</textarea>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary rounded-pill px-4">Update ATS score</button>
+        </div>
+    </form>
+
+    <div class="mt-4 text-center border-top pt-4">
+        <h3 class="mb-2">Current ATS score: {{ resume.ats_score }}%</h3>
+        {% if resume.ats_score >= 70 %}
+            <p class="text-success mb-0">Strong overall alignment</p>
+        {% elif resume.ats_score >= 40 %}
+            <p class="text-warning mb-0">Moderate — refine skills and keywords</p>
+        {% else %}
+            <p class="text-danger mb-0">Low — add measurable results and relevant keywords</p>
+        {% endif %}
+    </div>
+</div>
+</div>
+
+{% endblock %}

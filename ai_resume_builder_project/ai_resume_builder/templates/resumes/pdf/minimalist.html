@@ -1,0 +1,67 @@
+{% extends "resumes/pdf/_pdf_base.html" %}
+{% block extra_style %}
+<style>
+  .resume-container { width: 100%; }
+  .resume-content {
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #111111;
+    padding: 20mm 16mm;
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+  .resume-header {
+    width: 100%;
+    border-bottom: 1px solid #000000;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .resume-header-photo-wrap { float: right; margin-left: 20px; text-align: right; }
+  .resume-header-main { overflow: hidden; }
+  .resume-header-clear { clear: both; }
+  .resume-name { font-size: 24pt; font-weight: 700; color: #111111; margin: 0 0 2px; }
+  .resume-title { font-size: 11pt; font-weight: 600; color: #111111; margin: 0 0 6px; }
+  .resume-contact { font-size: 9pt; color: #333333; line-height: 1.4; }
+  .resume-photo { width: 90px; height: 90px; border: 1px solid #000000; border-radius: 0; }
+  .resume-section { margin-bottom: 15px; }
+  .resume-section-title {
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #111111;
+    border-bottom: 1px solid #000000;
+    padding: 0 0 4px;
+    margin-bottom: 10px;
+  }
+  .resume-summary,
+  .resume-entry-description,
+  .resume-project-description,
+  .resume-plain-list {
+    font-size: 9.5pt;
+    line-height: 1.45;
+    color: #111111;
+  }
+  .resume-entry,
+  .resume-education-entry {
+    margin-bottom: 12px;
+    page-break-inside: avoid;
+  }
+  .resume-entry-header { display: table; width: 100%; margin-bottom: 3px; }
+  .resume-entry-header-main { display: table-cell; vertical-align: top; }
+  .resume-entry-dates {
+    display: table-cell;
+    width: 1%;
+    vertical-align: top;
+    text-align: right;
+    font-size: 9pt;
+    color: #333333;
+    white-space: nowrap;
+  }
+  .resume-entry-title,
+  .resume-degree { display: block; font-size: 10pt; font-weight: 700; color: #111111; }
+  .resume-entry-company,
+  .resume-institution { display: block; font-size: 10pt; font-weight: 600; color: #111111; margin-top: 2px; }
+</style>
+{% endblock %}
+{% block body %}
+{% include "resumes/_resume_document.html" with show_actions=False pdf_mode=True %}
+{% endblock %}

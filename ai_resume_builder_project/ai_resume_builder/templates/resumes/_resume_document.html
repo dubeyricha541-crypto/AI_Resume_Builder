@@ -1,0 +1,122 @@
+<div class="resume-container template-minimalist{% if pdf_mode %} resume-pdf{% endif %}">
+  <div class="resume-content">
+    <div class="resume-header">
+      {% if resume.photo %}
+      <div class="resume-header-photo-wrap">
+        {% if pdf_mode and photo_path %}
+        <img src="{{ photo_path }}" alt="Profile Photo" class="resume-photo">
+        {% else %}
+        <img src="{{ resume.photo.url }}" alt="Profile Photo" class="resume-photo">
+        {% endif %}
+      </div>
+      {% endif %}
+      <div class="resume-header-main">
+        <h1 class="resume-name">{{ resume.full_name }}</h1>
+        {% if resume.job_title %}<div class="resume-title">{{ resume.job_title }}</div>{% endif %}
+        <div class="resume-contact">
+          {{ resume.email }}{% if resume.phone %}<br>{{ resume.phone }}{% endif %}{% if resume.address %}<br>{{ resume.address }}{% endif %}
+        </div>
+      </div>
+      <div class="resume-header-clear"></div>
+    </div>
+
+    {% if resume.career_objective %}
+    <div class="resume-section">
+      <div class="resume-section-title">Summary</div>
+      <p class="resume-summary">{{ resume.career_objective }}</p>
+    </div>
+    {% endif %}
+
+    {% if resume.skills %}
+    <div class="resume-section">
+      <div class="resume-section-title">Skills</div>
+      <div class="resume-plain-list">
+        {% for s in resume.skills_list %}{{ s }}{% if not forloop.last %}, {% endif %}{% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    {% if resume.exp_entries %}
+    <div class="resume-section">
+      <div class="resume-section-title">Experience</div>
+      {% for e in resume.exp_entries %}
+      <div class="resume-entry">
+        <div class="resume-entry-header">
+          <div class="resume-entry-header-main">
+            <span class="resume-entry-title">{{ e.title }}</span>
+            {% if e.company %}<div class="resume-entry-company">{{ e.company }}</div>{% endif %}
+          </div>
+          {% if e.start or e.end %}<span class="resume-entry-dates">{{ e.start }}{% if e.end %} - {{ e.end }}{% endif %}</span>{% endif %}
+        </div>
+        {% if e.desc %}<div class="resume-entry-description">{{ e.desc }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% elif resume.experience %}
+    <div class="resume-section">
+      <div class="resume-section-title">Experience</div>
+      <div class="resume-entry-description">{{ resume.experience }}</div>
+    </div>
+    {% endif %}
+
+    {% if resume.edu_entries %}
+    <div class="resume-section">
+      <div class="resume-section-title">Education</div>
+      {% for e in resume.edu_entries %}
+      <div class="resume-education-entry">
+        <div class="resume-entry-header">
+          <div class="resume-entry-header-main">
+            <span class="resume-degree">{{ e.degree }}</span>
+            {% if e.institution %}<div class="resume-institution">{{ e.institution }}</div>{% endif %}
+          </div>
+          {% if e.start or e.end %}<span class="resume-entry-dates">{{ e.start }}{% if e.end %} - {{ e.end }}{% endif %}</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% elif resume.education %}
+    <div class="resume-section">
+      <div class="resume-section-title">Education</div>
+      <div class="resume-entry-description">{{ resume.education }}</div>
+    </div>
+    {% endif %}
+
+    {% if resume.projects %}
+    <div class="resume-section">
+      <div class="resume-section-title">Projects</div>
+      <div class="resume-project-description">{{ resume.projects }}</div>
+    </div>
+    {% endif %}
+
+    {% if resume.certifications %}
+    <div class="resume-section">
+      <div class="resume-section-title">Certifications</div>
+      <div class="resume-project-description">{{ resume.certifications }}</div>
+    </div>
+    {% endif %}
+
+    {% if resume.achievements %}
+    <div class="resume-section">
+      <div class="resume-section-title">Achievements</div>
+      <div class="resume-project-description">{{ resume.achievements }}</div>
+    </div>
+    {% endif %}
+
+    {% if resume.languages %}
+    <div class="resume-section">
+      <div class="resume-section-title">Languages</div>
+      <div class="resume-project-description">{{ resume.languages }}</div>
+    </div>
+    {% endif %}
+
+    {% if show_actions %}
+    <div class="resume-actions">
+      <a href="{% url 'download_resume_pdf' resume.pk %}" class="resume-btn resume-btn-primary">Download PDF</a>
+      <a href="{% url 'download_resume_docx' resume.pk %}" class="resume-btn resume-btn-secondary">Download DOCX</a>
+      <a href="{% url 'ats_analyzer' resume.pk %}" class="resume-btn resume-btn-outline">Check ATS Score</a>
+      <a href="{% url 'portfolio' resume.pk %}" class="resume-btn resume-btn-outline">View Portfolio</a>
+      <a href="{% url 'ai_suggestions' resume.pk %}" class="resume-btn resume-btn-primary">AI Suggestions</a>
+    </div>
+    {% endif %}
+  </div>
+</div>

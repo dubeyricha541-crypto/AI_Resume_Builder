@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="card shadow p-4">
+    <h2 class="text-center mb-4">AI Resume Suggestions 🤖</h2>
+
+    <div class="mb-3">
+        <h5>AI Feedback:</h5>
+        <div class="border p-3 rounded bg-light">
+            {{ suggestion|linebreaks }}
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="{% url 'view_resume' resume.pk %}" class="btn btn-primary">
+            Back to Resume
+        </a>
+    </div>
+</div>
+
+{% endblock %}

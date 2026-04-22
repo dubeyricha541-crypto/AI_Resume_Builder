@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-5">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h2 class="fw-bold m-0" style="letter-spacing:.2px;">Resume Dashboard</h2>
+      <div class="text-muted">Manage your resumes, ATS scores, and shareable portfolio links. ATS scores update when you create or edit a resume (or use the ATS analyzer).</div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'create_resume' %}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+        + Create New Resume
+      </a>
+      <a href="{% url 'upload_resume_ats' %}" class="btn btn-outline-primary rounded-pill px-4 shadow-sm">
+        Check uploaded resume (ATS)
+      </a>
+    </div>
+  </div>
+
+  <div class="card shadow-lg border-0 rounded-4 p-3 p-md-4">
+    {% if resumes %}
+      <div class="table-responsive">
+        <table class="table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>Resume</th>
+              <th>Resume Type</th>
+              <th>ATS Score</th>
+              <th>Portfolio</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for resume in resumes %}
+            <tr id="resume-row-{{ resume.pk }}">
+              <td>
+                <div class="d-flex align-items-center gap-3">
+                  {% if resume.photo %}
+                    <img src="{{ resume.photo.url }}" alt="Photo" style="width:44px;height:44px;border-radius:12px;object-fit:cover;">
+                  {% else %}
+                    <div style="width:44px;height:44px;border-radius:12px;background:#eef2ff;"></div>
+                  {% endif %}
+                  <div>
+                    <div class="fw-semibold">{{ resume.full_name }}</div>
+                    <div class="text-muted small">{{ resume.email }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="text-muted">ATS Perfect</td>
+              <td>
+                <span class="badge rounded-pill {% if resume.ats_score >= 80 %}bg-success{% elif resume.ats_score >= 60 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                  {{ resume.ats_score }}%
+                </span>
+              </td>
+              <td>
+                <a class="btn btn-sm btn-outline-dark rounded-pill" href="{% url 'public_portfolio' resume.slug %}" target="_blank" rel="noopener">
+                  Share link
+                </a>
+              </td>
+              <td class="text-end">
+                <div class="btn-group" role="group" aria-label="Resume actions">
+                  <a href="{% url 'view_resume' resume.pk %}" class="btn btn-sm btn-outline-primary">Preview</a>
+                  <a href="{% url 'download_resume_pdf' resume.pk %}" class="btn btn-sm btn-outline-success">PDF</a>
+                  <a href="{% url 'download_resume_docx' resume.pk %}" class="btn btn-sm btn-outline-success">DOCX</a>
+                  <a href="{% url 'edit_resume' resume.pk %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteResumeModal"
+                    data-resume-id="{{ resume.pk }}"
+                    data-resume-name="{{ resume.full_name|escapejs }}"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <h4 class="mb-2">No resumes yet</h4>
+        <p class="text-muted mb-0">Create your first resume to see ATS score and a shareable portfolio link.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div class="modal fade" id="deleteResumeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">Delete resume</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="text-muted">
+          This will permanently delete <span class="fw-semibold text-dark" id="delete-resume-name">this resume</span>.
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger rounded-pill px-4" id="confirm-delete-btn">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modalEl = document.getElementById('deleteResumeModal');
+    if (!modalEl) return;
+
+    let currentResumeId = null;
+    const nameEl = document.getElementById('delete-resume-name');
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+
+    modalEl.addEventListener('show.bs.modal', function (event) {
+      const btn = event.relatedTarget;
+      currentResumeId = btn?.getAttribute('data-resume-id');
+      const resumeName = btn?.getAttribute('data-resume-name') || 'this resume';
+      if (nameEl) nameEl.textContent = resumeName;
+    });
+
+    async function deleteResume(id) {
+      const url = `{% url 'delete_resume_ajax' 0 %}`.replace('/0/', '/' + id + '/');
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
+      if (!resp.ok) throw new Error('Delete failed');
+      return await resp.json();
+    }
+
+    confirmBtn?.addEventListener('click', async function () {
+      if (!currentResumeId) return;
+      confirmBtn.disabled = true;
+      try {
+        const data = await deleteResume(currentResumeId);
+        if (data && data.ok) {
+          const row = document.getElementById('resume-row-' + currentResumeId);
+          if (row) row.remove();
+          const m = bootstrap.Modal.getInstance(modalEl);
+          m?.hide();
+        }
+      } catch (e) {
+        alert('Could not delete resume. Please try again.');
+      } finally {
+        confirmBtn.disabled = false;
+      }
+    });
+  })();
+</script>
+
+{% endblock %}
